@@ -6,11 +6,11 @@
 
 #include <Eigen/Dense>
 
-#include "World.h"
-#include "Obj_fn.h"
-#include "Optimizer.h"
-#include "Prior.h"
-#include "Controller.h"
+#include "../include/World.h"
+#include "../include/Obj_fn.h"
+#include "../include/Optimizer.h"
+#include "../include/Prior.h"
+#include "../include/Controller.h"
 
 using namespace std;
 using namespace Eigen;
