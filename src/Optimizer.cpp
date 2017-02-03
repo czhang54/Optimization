@@ -3,10 +3,10 @@
 #include <vector>
 #include <cmath>
 
-#include "World.h"
-#include "Optimizer.h"
-#include "Prior.h"
-#include "Controller.h"
+#include "../include/World.h"
+#include "../include/Optimizer.h"
+#include "../include/Prior.h"
+#include "../include/Controller.h"
 
 using namespace std;
 

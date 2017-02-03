@@ -5,10 +5,10 @@
 
 #include <Eigen/Dense>
 
-#include "World.h"
-#include "Prior.h"
-#include "Optimizer.h"
-#include "Controller.h" 
+#include "../include/World.h"
+#include "../include/Prior.h"
+#include "../include/Optimizer.h"
+#include "../include/Controller.h" 
 // #include "Poisson.h"
 
 using namespace std;
