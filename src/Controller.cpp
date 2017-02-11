@@ -5,10 +5,12 @@
 
 #include <Eigen/Dense>
 
-#include "../include/World.h"
-#include "../include/Prior.h"
-#include "../include/Optimizer.h"
-#include "../include/Controller.h" 
+#include "World.h"
+#include "Obj_fn.h" 
+// Need to include Obj_fn.h to compile "RowVectorXd h = optimizer->get_world()->get_obj()->evaluate(C);" in CPF::f
+#include "Prior.h"
+#include "Optimizer.h"
+#include "Controller.h" 
 // #include "Poisson.h"
 
 using namespace std;
@@ -36,13 +38,6 @@ MatrixXd Controller::f(const MatrixXd &X, int TI, double dt){
 ostream& operator<<(ostream &out, const Controller *c){
 	out << "I am attached with " << c->optimizer->getName() << '\n';
 	return out;
-}
-
-MatrixXd CPF::ff(const MatrixXd &X, int TI, double dt) {
-
-	cout << "TI = " << TI << '\n';
-
-	return X;
 }
 
 
@@ -75,10 +70,10 @@ MatrixXd CPF::f(const MatrixXd &X, int TI, double dt) {
 		u = Affine(C, -h_diff);
 	}
 
-	if (TI == T-2){
-		double hm_final = (optimizer->get_world()->get_obj()->evaluate(C + u*dt)).mean();
-		h_hat(TI+1) = hm_final;
-	}
+	// if (TI == T-2){
+	// 	double hm_final = (optimizer->get_world()->get_obj()->evaluate(C + u*dt)).mean();
+	// 	h_hat(TI+1) = hm_final;
+	// }
 
 	return C + u*dt;
 }
