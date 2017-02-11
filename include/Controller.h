@@ -69,8 +69,6 @@ public:
 
 	virtual MatrixXd f(const MatrixXd &X, int TI, double dt);
 
-	MatrixXd ff(const MatrixXd &X, int TI, double dt);
-
 	MatrixXd Affine(const MatrixXd &X, const RowVectorXd &h_diff);
 
 };

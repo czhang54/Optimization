@@ -10,6 +10,7 @@
 // #include "Controller.h"
 
 using namespace std;
+using namespace Eigen;
 
 // class World;
 class World;
