@@ -1,5 +1,5 @@
-#ifndef OBJ_FNS
-#define OBJ_FNS
+#ifndef OBJ_FN
+#define OBJ_FN
 
 #include <iostream>
 #include <string>
