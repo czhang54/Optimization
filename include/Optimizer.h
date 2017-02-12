@@ -1,77 +1,105 @@
-#ifndef OPTIMIZER
-#define OPTIMIZER
+#ifndef OPTIMIZER_TEMPLATE
+#define OPTIMIZER_TEMPLATE
 
 #include <iostream>
-#include <string>
-#include <vector>
-#include <cmath>
 
-// #include "World.h"
-// #include "Controller.h"
+#include <Eigen/Dense>
 
-using namespace std;
+/* In order for the compiler to use a template, it must see both the template definition (not just a declaration) 
+and the template type used to instantiate the template. 
+The following headers MUST be included since they appear in template type parameter for the Optimizer class */
+#include "Prior.h"
+#include "Algorithm.h"
 
-// class World;
-class World;
-class Prior; // Need to declare Prior class to initialize Optimizer object
-class Controller;
+// using namespace std;
+// using namespace Eigen;
 
-// No need to declare other dependency class or include .h files, they are declared/included in Optimizer.cpp
+namespace optimization{
 
-typedef Matrix<MatrixXd, Dynamic, 1> Tensor3Xd; // 3d array (tensor)
+	class Obj_fn;
+	// class Prior;
+	// class Algorithm;
 
-class Optimizer
-{
-	int N;
-	string name;
-	// vector<vector<vector<double>>> value;
-	Tensor3Xd value;
-	Prior *prior;
-	Controller *controller;
-	World *world;
+	template <class P, class A>
+	class Optimizer{
+
+		typedef P Prior_model;
+		typedef A Algorithm_model;
+
+		std::string name; // Name of the optimizer
+		int num_iterations; // Number of iterations
+		double step_size; // Step size of the algorithm. Constant value by default
+		int num_particles; // Number of particles. N=1 for algorithms without particles e.g. SA
+		int dim; // Dimension of the state
+		Eigen::MatrixXd state; // State of the optimizer, updated after each iteration
+
+		Obj_fn *obj_fn; // Objective function object
+		Prior_model prior; // Prior model object
+		Algorithm_model algorithm; // Algorithm model object
+
+	public:
+
+		/* Constructor */
+		Optimizer(std::string optimizer_name, const int T, double step, const int d, const int N=1) {
+			std::cout << "Defining optimizer..." << '\n';
+			name = optimizer_name;
+			num_iterations = T;
+			step_size = step;
+			dim = d;
+			num_particles = N;
+			state = Eigen::MatrixXd::Zero(dim, num_particles);
+
+			prior = Prior_model(dim);
+			algorithm = Algorithm_model(num_iterations);
+		}
+
+		/* Trivial destructor */
+		~Optimizer(){}
+
+		/* Link to the objective function */
+		void add_obj(Obj_fn *fn){obj_fn = fn;}
+
+		/* Initialize the optimizer:
+		   (1) Generate initial samples
+		   (2) Link the objective function to the algorithm */
+		void initialize(std::default_random_engine &generator) {
+			// Prior *prior = new Prior(d); // Define prior model of type Prior
+			std::cout << "initializing optimizer..." << '\n';
+			state = prior.sample_IC(num_particles, generator);
+			algorithm.add_obj(obj_fn);
+			// delete prior;
+		}
+
+		/* Simulate the optimizer by running its algorithm */
+		void simulate(std::default_random_engine &generator){
+			for (int TI=0; TI<num_iterations; ++TI){
+				state = algorithm.run(state, TI, step_size, generator); // Execute one iteration of the algorithm
+			}	
+		}
+
+		/* Access to the state of the optimizer */
+		Eigen::MatrixXd& getState() {return state;}
+
+		/* Access to the perforamance of the optimizer
+		   (1) Average function value after each iteration
+		   (2) Best function value found after each iteration
+		   (3) Distance from the global minimizer */
+		std::vector<Eigen::RowVectorXd> getPerformance() {
+			return algorithm.getPerformance();
+		}
 
 
-public:
+		void message(){
+			name << " will be simulated" << '\n';
+		}
 
-	Optimizer(const World *w, const int num_particles, string optimizer_name);
 
-	friend ostream& operator<<(ostream &out, const Optimizer &optimizer);
 
-	Tensor3Xd getValue() const;
-	string getName() const;
-	World* get_world() const;
+	};
 
-	// Set prior model
-	void setPrior(Prior *p);
-
-	// Initialize
-	void initialize();
-
-	// Set controller model
-	void setController(Controller *c);
-
-	void update(int TI, double dt);
-
-	// friend void World::add_optimizer(Optimizer *o);
-	friend World; // Must include the entire class, even if we only want to friend with a single member function
-
-	
-};
+} // End of namespace optimization
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif
+#endif 
