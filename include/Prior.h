@@ -2,104 +2,80 @@
 #define PRIOR
 
 #include <iostream>
-#include <string>
-#include <vector>
-#include <cmath>
 #include <random>
 
 #include <Eigen/Dense>
 
-// #include "Optimizer.h"
-// #include "World.h"
 
-using namespace std;
-using namespace Eigen;
+// using namespace std;
 
 
-class Prior
-{
+namespace optimization{
 
-public:
+	using namespace Eigen;
 
-	virtual MatrixXd sample_IC(int N) = 0; // Pure virtual function
-	virtual void message() = 0;
+	class Prior
+	{
 
-};
+	public:
+
+		virtual MatrixXd sample_IC(int N, std::default_random_engine &generator) = 0; // Pure virtual function
+		virtual void message() = 0;
+
+	};
 
 
-// Multivariate Gaussian
-class Gaussian: public Prior
-{
-	VectorXd mean;
-	VectorXd std;
+	// Multivariate Gaussian
+	class Gaussian: public Prior
+	{
+		VectorXd mean;
+		VectorXd std;
 
-public:
-	// Generate Gaussian samples. Need more efficient method!
-	Gaussian(const VectorXd &mean, const VectorXd &std)
-		: mean(mean), std(std) {}
+	public:
+		Gaussian(){} // Default constructor for just declaring a Gaussian object
 
-	virtual MatrixXd sample_IC(int N) override {
+		Gaussian(const VectorXd &mean, const VectorXd &std)
+			: mean(mean), std(std) {}
 
-		default_random_engine generator;
-		// Seeding generator to get NEW random values every time compiled!
-		generator.seed(static_cast<unsigned int>(std::time(0))); 
-
-		MatrixXd particles(mean.size(), N);
-		for (int d=0; d<mean.size(); d++){
-			normal_distribution<double> normal(mean(d), std(d));
-			RowVectorXd particles_d(N);
-			for (int i=0; i<N; i++){
-				particles_d(i) = normal(generator);
-			}
-			particles.row(d) = particles_d;
+		explicit Gaussian(const int dim){
+			mean = VectorXd::Constant(dim, 40);
+			std = VectorXd::Constant(dim, 20);
 		}
 
-		return particles;	
-	}
+		virtual MatrixXd sample_IC(const int num_particles, std::default_random_engine &generator) override;
 
-	virtual void message() override {
-		cout << "Initial distribution is Gaussian" << '\n';
-	}
+		virtual void message() override;
 
-	// friend ostream& operator<<(ostream &out, const Gaussian) 
+		// friend ostream& operator<<(ostream &out, const Gaussian) 
 
-};
+	};
 
 
-class Uniform: public Prior
-{
-	VectorXd l;
-	VectorXd r;
+	class Uniform: public Prior
+	{
+		VectorXd l;
+		VectorXd r;
 
 
-public:
-	// Generate Gaussian samples. Need more efficient method!
-	Uniform(const VectorXd &l_range, const VectorXd &r_range)
-		: l(l_range), r(r_range) {}
+	public:
+		Uniform(){} // Default constructor for just declaring the Uniform object
 
-	virtual MatrixXd sample_IC(int N) override {
+		Uniform(const VectorXd &l_range, const VectorXd &r_range)
+			: l(l_range), r(r_range) {}
 
-		default_random_engine generator;
-		generator.seed(static_cast<unsigned int>(std::time(0))); 
-
-		MatrixXd particles;
-		for (int d=0; d<l.size(); d++){
-			uniform_real_distribution<double> uniform(l(d), r(d));
-			RowVectorXd particles_d(N);
-			for (int i=0; i<N; i++){
-				particles_d(i) = uniform(generator);
-			}
-			particles.row(d) = particles_d;
+		explicit Uniform(const int dim){
+			l = VectorXd::Constant(dim, -40);
+			r = VectorXd::Constant(dim, 40);
 		}
 
-		return particles;	
-	}
+		virtual MatrixXd sample_IC(const int num_particles, std::default_random_engine &generator) override;
 
-	virtual void message() override {
-		cout << "Initial distribution is Uniform" << '\n';
-	}
+		virtual void message() override;
 
-};
+	};
+
+
+} // End of namespace optimization
 
 #endif
 
