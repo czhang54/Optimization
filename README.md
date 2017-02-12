@@ -18,5 +18,5 @@ The project was tested on Mac OS 10.12 using g++ 4.2.1.
 To compile and run the project in terminal: 
   + cd example
   + g++ -std=c++11 -I ./../include -c ./../src/*.cpp example.cpp
-  + g++ example.o Prior.o Obj_fn.o Algorithm.o -o example
+  + g++ *.o -o example
   + ./example
