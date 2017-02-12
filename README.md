@@ -14,7 +14,7 @@ Directories:
 Requirement:
   + Eigen: a convenient matrix library that can be downloaded at http://eigen.tuxfamily.org/index.php?title=Main_Page#Download
  
-The project was tested on Mac OS 10.12 using g++ 4.2.1. \\
+The project was tested on Mac OS 10.12 using g++ 4.2.1. 
 To compile and run the project in terminal: 
   + cd example
   + g++ -std=c++11 -I ./../include -c ./../src/*.cpp example.cpp
