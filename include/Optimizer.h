@@ -1,5 +1,5 @@
-#ifndef OPTIMIZER_TEMPLATE
-#define OPTIMIZER_TEMPLATE
+#ifndef OPTIMIZER
+#define OPTIMIZER
 
 #include <iostream>
 
