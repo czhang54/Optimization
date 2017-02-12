@@ -1,5 +1,5 @@
-#ifndef CONTROLLER
-#define CONTROLLER
+#ifndef ALGORITHM
+#define ALGORITHM
 
 #include <iostream>
 #include <vector>
