@@ -1,108 +1,66 @@
 #include <iostream>
 #include <string>
-#include <vector>
-#include <cmath>
+// #include <vector>
+// #include <cmath>
 #include <map>
 
 #include <Eigen/Dense>
 
-#include "World.h"
 #include "Obj_fn.h"
-#include "Optimizer.h"
 #include "Prior.h"
-#include "Controller.h"
+#include "Optimizer.h"
 
-using namespace std;
-using namespace Eigen;
+// using namespace std;
+// using namespace Eigen;
 // using namespace optimization;
 
-template<typename T> Obj_fn* def_objective_function(int dim) { return new T(dim); }
+template<typename Obj_type> 
+optimization::Obj_fn* define_objective_function(int dim) { return new Obj_type(dim); }
 
-typedef map<string, Obj_fn*> Obj_fn_map;
+typedef std::map<std::string, optimization::Obj_fn*> Obj_fn_map;
 
 
 
 int main(){
 
-	/* Fix important parameters */
+	/* Set simulation parameters */
 	const double start = 0.0;
-	const double stop  = 0.100;
-	const double step  = 0.001;
+	const double stop  = 0.010;
+	const double step_size  = 0.001;
 	const int dim = 2;
-	const int num_particles = 200;
-	
-	// Initial distribution (Gaussian)
-	const string init_dist("gaussian");
-	const VectorXd init_mean = VectorXd::Constant(dim, 40);
-	const VectorXd init_std = VectorXd::Constant(dim, 20); // Assume uncorrelated components
-	// Initial distribution (Uniform)
-	const VectorXd l_range = VectorXd::Constant(dim, -50);
-	const VectorXd r_range = VectorXd::Constant(dim, 50);
+	const int num_particles = 100;
 
-	const string optimizer_name ("CPF"); // Optional
-
-	/* Initialize the world */
-	World world(start, stop, step, dim);
-	cout << world;
+	std::default_random_engine generator;
+	generator.seed(static_cast<unsigned int>(std::time(0)));
 
 	Obj_fn_map obj_map;
-	obj_map["Rastrigin"] = def_objective_function<Rastrigin>(dim);
-	obj_map["Quadratic"] = def_objective_function<Quadratic>(dim);
+	obj_map["Rastrigin"] = define_objective_function<optimization::Rastrigin>(dim);
+	obj_map["Quadratic"] = define_objective_function<optimization::Quadratic>(dim);
 
 	/* Define objective function */
-	const string obj_name("Quadratic");
-	
-	// Rastrigin rastrigin(dim);
-	// Obj_fn *fn = &rastrigin;
+	const std::string obj_name("Rastrigin");
 
-	Obj_fn *fn = obj_map[obj_name];
-	cout << fn;
+	optimization::Obj_fn *fn = obj_map[obj_name];
+	std::cout << fn;
 
-	world.add_obj(fn);
-	cout << world.get_obj();
+	/* Define and initialize optimizers */
+	optimization::Optimizer<optimization::Gaussian, optimization::CPF> optimizer("CPF", static_cast<int>(stop/step_size), step_size, dim, num_particles);
+	optimizer.add_obj(fn);
+	optimizer.initialize(generator);
+	// std::cout << optimizer.getState() << std::endl; // Print initial particles if needed
 
-	/* Define Prior model */
-	// Need to use kwargs to create a map!
+	/* Simulate optimizers */
+	optimizer.simulate(generator);
 
-
-	Gaussian gaussian(init_mean, init_std);
-	Prior *prior = &gaussian;
-
-	prior->message(); // Print name of initial distribution
+	std::cout << optimizer.getPerformance()[0] << '\n';
+	std::cout << optimizer.getPerformance()[1] << '\n';
+	std::cout << optimizer.getPerformance()[2] << '\n';
 
 
-	/* Define Controller model */
-	CPF cpf(world.get_time());
-	Controller *controller = &cpf;
 
 
-	/* Define optimizer */
-	Optimizer optimizer_CPF(&world, num_particles, optimizer_name);
-	cout << optimizer_CPF;
-
-	world.add_optimizer(&optimizer_CPF);
-
-	// Set prior model of optimizer
-	optimizer_CPF.setPrior(prior);
-	optimizer_CPF.initialize();
-
-	// Set controller model of optimizer
-	// optimizer_CPF.setController(controller);
-	optimizer_CPF.setController(&cpf);
-	
-
-	/* Simulate */
-	world.simulate();
-
-	// Assess performance
-	vector<RowVectorXd> performance = controller->performance();
-	RowVectorXd h_hat = performance[0];
-	cout << h_hat << '\n';
-	// cout << h_hat(world.get_time()-1) << '\n';
 
 
-	delete fn;
-	fn = nullptr;
 
 	return 0;
 }
