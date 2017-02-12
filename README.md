@@ -1,4 +1,4 @@
-# Optimization_Cpp
+# Optimization
 
 This repository contains C++ codes for simulating global optimization algorithms. 
 It is designed to be flexible for the user to add:
