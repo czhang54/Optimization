@@ -2,9 +2,9 @@
 
 This repository contains C++ codes for simulating global optimization algorithms. 
 It is designed to be flexible for the user to add:
-  + Objective functions
-  + Initialization methods for the optimizers
-  + Specific optimization algorithms
+  + Objective functions (src/Obj_fn.cpp)
+  + Initialization methods for the optimizers (src/Prior.cpp)
+  + Specific optimization algorithms (src/Algorithm.cpp)
 
 Directories:
   + include: contains all the headers
@@ -20,3 +20,5 @@ To compile and run the project in terminal:
   + g++ -std=c++11 -I ./../include -c ./../src/*.cpp example.cpp
   + g++ *.o -o example
   + ./example
+
+A more comprehensive presentation of recent global optimization algorithms can be found in a technical note contained in the Optimization_Python project 
