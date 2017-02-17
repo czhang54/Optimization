@@ -18,9 +18,9 @@ namespace optimization{
 
 		std::cout << "Generating Gaussian samples..." << std::endl;
 
-		MatrixXd particles(mean.size(), num_particles);
-		for (int d=0; d<mean.size(); d++){
-			std::normal_distribution<double> normal(mean(d), std(d));
+		MatrixXd particles(mean_.size(), num_particles);
+		for (int d=0; d<mean_.size(); d++){
+			std::normal_distribution<double> normal(mean_(d), std_(d));
 			RowVectorXd particles_d(num_particles);
 			for (int i=0; i<num_particles; i++){
 				particles_d(i) = normal(generator);
@@ -43,9 +43,9 @@ namespace optimization{
 
 		std::cout << "Generating Uniform samples..." << std::endl;
 
-		MatrixXd particles = MatrixXd::Zero(l.size(), num_particles); // Needs to prescribe the size of particles
-		for (int d=0; d<l.size(); d++){
-			std::uniform_real_distribution<double> uniform(l(d), r(d));
+		MatrixXd particles = MatrixXd::Zero(l_range_.size(), num_particles); // Needs to prescribe the size of particles
+		for (int d=0; d<l_range_.size(); d++){
+			std::uniform_real_distribution<double> uniform(l_range_(d), r_range_(d));
 			RowVectorXd particles_d(num_particles);
 			for (int i=0; i<num_particles; i++){
 				particles_d(i) = uniform(generator);
