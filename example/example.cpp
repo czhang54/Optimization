@@ -79,7 +79,7 @@ int main(){
 
 	/* Define and initialize optimizers */
 	// Controlled Particle Filter (CPF) algorithm
-	optimization::Optimizer<optimization::Gaussian, optimization::ControlledParticleFilter> optimizer_CPF("CPF", obj_fn, num_iterations, step_size, dim, num_particles);
+	optimization::Optimizer<optimization::Gaussian, optimization::ControlledParticleFilter> optimizer_CPF("Controlled Particle Filter", obj_fn, num_iterations, step_size, dim, num_particles);
 	optimizer_CPF.initialize(generator);
 
 	// Cross Entropy (CE) algorithm
