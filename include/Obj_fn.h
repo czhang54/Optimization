@@ -1,3 +1,8 @@
+/*
+This header defines different objective functions. 
+More can be added according to users' needs. 
+*/
+
 #ifndef OBJ_FN
 #define OBJ_FN
 
@@ -24,10 +29,14 @@ namespace optimization{
 		Obj_fn(std::string name, int dim, double h_min)
 			: m_name(name), m_dim(dim), h_min(h_min) {}
 
-		virtual double getMin() const;
+		/* Access global minimum value of the function */
+		double getMin() const;
 
+		/* Access global minimizer */
 		virtual Eigen::VectorXd global_minimizer() const;
 
+		/* Evaluate the function given state X. 
+		Override by inherited classes. */
 		virtual Eigen::RowVectorXd evaluate(const Eigen::MatrixXd &X);
 
 		friend std::ostream& operator<<(std::ostream &out, const Obj_fn *fn);
@@ -46,7 +55,7 @@ namespace optimization{
 
 		Rastrigin(int dim): Obj_fn("Rastrigin", dim, 0.0) {}
 
-		virtual double getMin() const override;
+		// virtual double getMin() const override;
 
 		virtual Eigen::VectorXd global_minimizer() const override;
 
@@ -60,15 +69,15 @@ namespace optimization{
 
 	class Quadratic: public Obj_fn
 	{
-		Eigen::MatrixXd H;
+		Eigen::MatrixXd H_;
 
 	public:
 
 		Quadratic(int dim): Obj_fn("Quadratic", dim, 0.0) {
-			H = Eigen::MatrixXd::Identity(m_dim, m_dim);
+			H_ = Eigen::MatrixXd::Identity(m_dim, m_dim);
 		}
 
-		virtual double getMin() const override;
+		// virtual double getMin() const override;
 
 		virtual Eigen::VectorXd global_minimizer() const override;
 

@@ -28,20 +28,26 @@ namespace optimization{
 	// Multivariate Gaussian
 	class Gaussian: public Prior
 	{
-		VectorXd mean;
-		VectorXd std;
+		VectorXd mean_;
+		VectorXd std_;
 
 	public:
-		Gaussian(){} // Default constructor for just declaring a Gaussian object
 
+		/* Default constructor for just declaring a Gaussian object */
+		Gaussian(){} 
+
+		/* Constructor with input mean and standard deviation */
 		Gaussian(const VectorXd &mean, const VectorXd &std)
-			: mean(mean), std(std) {}
+			: mean_(mean), std_(std) {}
 
+		/* Constructor with only dimension parameter. 
+		Used if mean and standard deviation are not frequently changed. */
 		explicit Gaussian(const int dim){
-			mean = VectorXd::Constant(dim, 40);
-			std = VectorXd::Constant(dim, 20);
+			mean_ = VectorXd::Constant(dim, 40);
+			std_ = VectorXd::Constant(dim, 20);
 		}
 
+		/* Generate initial samples from Gaussian distribution */
 		virtual MatrixXd sample_IC(const int num_particles, std::default_random_engine &generator) override;
 
 		virtual void message() override;
@@ -53,21 +59,27 @@ namespace optimization{
 
 	class Uniform: public Prior
 	{
-		VectorXd l;
-		VectorXd r;
+		VectorXd l_range_;
+		VectorXd r_range_;
 
 
 	public:
+
+		/* Default constructor for just declaring a Uniform object */
 		Uniform(){} // Default constructor for just declaring the Uniform object
 
+		/* Constructor with parameters specifying the range in each dimension */
 		Uniform(const VectorXd &l_range, const VectorXd &r_range)
-			: l(l_range), r(r_range) {}
+			: l_range_(l_range), r_range_(r_range) {}
 
+		/* Constructor with only dimension parameter. 
+		Used if range parameters are not frequently changed. */		
 		explicit Uniform(const int dim){
-			l = VectorXd::Constant(dim, -40);
-			r = VectorXd::Constant(dim, 40);
+			l_range_ = VectorXd::Constant(dim, -40);
+			r_range_ = VectorXd::Constant(dim, 40);
 		}
 
+		/* Generate initial samples from Uniform distribution */
 		virtual MatrixXd sample_IC(const int num_particles, std::default_random_engine &generator) override;
 
 		virtual void message() override;

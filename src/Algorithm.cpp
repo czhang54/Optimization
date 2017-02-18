@@ -1,12 +1,18 @@
+/*
+Implementation of the Algorithm base class. 
+*/
+
 #include <iostream>
 #include <cmath>
+#include <string>
 
 #include <Eigen/Dense>
 
 #include "Obj_fn.h" 
-#include "Prior.h"
+// #include "Prior.h"
 #include "Optimizer.h"
 #include "Algorithm.h" 
+#include "PerformanceMetric.h"
 
 // using namespace std;
 
@@ -15,6 +21,7 @@ namespace optimization{
 
 	using namespace Eigen;
 
+    /* Algorithm is the base class for all algorithms */
 	MatrixXd Algorithm::run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator){
 
 		return X;
@@ -33,8 +40,8 @@ namespace optimization{
 		else {h_best(TI) = h_best(TI-1);}
 
 		// Calculate distance between mean of X and global minimizer 
-		VectorXd mean = VectorXd::Zero(X.rows());
-		if (X.cols() > 1){
+		VectorXd mean = VectorXd::Zero(dim);
+		if (num_particles > 1){
 			for (int d=0; d<X.rows(); ++d){
 				mean(d) = X.row(d).mean();
 			}
@@ -47,7 +54,10 @@ namespace optimization{
 
 	}
 
-
+	/* Access to the perforamance of the optimizer
+		   (1) Average function value after each iteration
+		   (2) Best function value found after each iteration
+		   (3) Distance from the global minimizer */
 	std::vector<RowVectorXd> Algorithm::getPerformance(){
 		std::vector<RowVectorXd> p;
 		p.push_back(h_mean);
@@ -56,101 +66,28 @@ namespace optimization{
 		return p;
 	}
 
-
-	MatrixXd CPF::run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator) {
-
-		if (TI % 1 == 0)
-			{std::cout << "TI = " << TI << '\n';}
-
-		RowVectorXd h = obj_fn->evaluate(X); // Evaluate objective function at particles
-
-		performance(X, h, TI);
-		
-		// std::cout << "h_mean = " << h_mean(TI) << '\n';
-		// std::cout << "h_best = " << h_best(TI) << '\n';
-		// std::cout << "distance = " << distance(TI) << '\n';
-		
-		RowVectorXd h_diff = h.array() - h_mean(TI);
-
-		// Main part: calculate control function for each particle
-		MatrixXd u = MatrixXd::Zero(X.rows(), X.cols());
-		u = Control(X, -h_diff, u);
-
-		return X + u*dt;
-	}
-
-
-	// Affine control law
-	MatrixXd& CPF::Control(const MatrixXd &X, const RowVectorXd &h_diff, MatrixXd &u){
-
-		typedef Matrix<MatrixXd, Dynamic, 1> Tensor3Xd; // 3d array (tensor)
-
-		int dim = X.rows();
-		int N   = X.cols();
-		int L   = dim*(dim+1)/2;
-
-		// MatrixXd  u = MatrixXd::Zero(dim, N);
-		MatrixXd  K = MatrixXd::Zero(dim, N);
-		VectorXd  B = VectorXd::Zero(dim);
-		VectorXd  X_mean = VectorXd::Zero(dim);
-		MatrixXd  Phi = MatrixXd::Zero(L, N);
-		Tensor3Xd gradPhi(dim);
-
-		/* Compute B */
-		for (int d=0; d<dim; ++d){
-			B(d) = ((h_diff.array()*(X.row(d).array())).matrix()).mean();
-			X_mean(d) = X.row(d).mean();
-			gradPhi(d) = MatrixXd::Zero(L, N);
+	/* Print a particular performance metric, currently three options */
+	void Algorithm::printPerformance(std::string optimizer_name, int which_metric){ 
+		std::cout << optimizer_name << ' ';
+		switch(which_metric){
+			case AVERAGE_VALUE:
+				std::cout << "Average function value at each iteration:" << '\n';
+				std::cout << h_mean << '\n';
+				break;
+			case BEST_VALUE_FOUND:
+				std::cout << "Best function value found at each iteration:" << '\n';
+				std::cout << h_best << '\n';	
+				break;
+			case DISTANCE_ERROR:
+				std::cout << "Distance error at each iteration:" << '\n';
+				std::cout << distance << '\n';
+				break;
+			default:
+				std::cout << "Please select a proper perforamance metric!";			
 		}
-
-		/* Compute K */	
-		// Evaluate basis functions
-		int count(0);
-		for (int d=0; d<dim; ++d){
-			Phi.row(count) = ((X.row(d).array() - X_mean(d))*(X.row(d).array() - X_mean(d))).matrix();
-			gradPhi(d).row(count) = 2*(X.row(d).array() - X_mean(d)).matrix();
-			count += 1;
-		}
-
-		for (int d=0; d<dim-1; ++d){
-			for (int m=d+1; m<dim; ++m){
-				Phi.row(count) = ((X.row(d).array() - X_mean(d))*(X.row(m).array() - X_mean(m))).matrix();
-				gradPhi(d).row(count) = (X.row(m).array() - X_mean(m)).matrix();
-				gradPhi(m).row(count) = (X.row(d).array() - X_mean(d)).matrix();
-				count += 1;
-			}
-		}
-
-		// Solve coefficients
-		MatrixXd A = MatrixXd::Zero(L, L);
-		VectorXd b = VectorXd::Zero(L);	
-		VectorXd k = VectorXd::Zero(L);
-
-		for (int l=0; l<L; l++){
-			b(l) = h_diff.dot(Phi.row(l))/(static_cast<double>(N));
-			for (int m=l; m<L; ++m){
-				double sum = 0.0;
-				for (int d=0; d<dim; ++d){
-					sum += (gradPhi(d).row(l)).dot(gradPhi(d).row(m));
-				}
-				A(l,m) = sum/(static_cast<double>(N));
-				A(m,l) = A(l,m);
-			}
-		}
-
-		k = A.jacobiSvd(ComputeThinU | ComputeThinV).solve(b);
-
-		for (int d=0; d<dim; ++d){
-			K.row(d) = (k.transpose())*gradPhi(d);
-		}
-
-		for (int n=0; n<N; ++n){
-			u.col(n) = K.col(n) + B;
-		}
-
-		return u;
 
 	}
+	
 
 } // End of namespace optimization
 

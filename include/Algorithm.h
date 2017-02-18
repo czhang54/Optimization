@@ -1,8 +1,13 @@
+/*
+This header defines the base class of all algorithms. 
+*/
+
 #ifndef ALGORITHM
 #define ALGORITHM
 
 #include <iostream>
 #include <vector>
+#include <random>
 
 #include <Eigen/Dense>
 
@@ -14,12 +19,15 @@ namespace optimization{
 
 	class Obj_fn;
 
+	/* Base class for all algorithms */
 	class Algorithm
 	{	
 
 	protected:
 
 		Obj_fn *obj_fn;
+		int dim;
+		int num_particles;
 
 		// Performace metric
 		RowVectorXd h_mean;
@@ -32,7 +40,8 @@ namespace optimization{
 		Algorithm() {}
 
 		/* Constructor */
-		explicit Algorithm(int num_iterations) {
+		explicit Algorithm(int num_iterations, int dim, int num_particles)
+			: dim(dim), num_particles(num_particles) {
 			h_mean = RowVectorXd::Zero(num_iterations+1);
 			h_best = RowVectorXd::Zero(num_iterations+1);
 			distance = RowVectorXd::Zero(num_iterations+1);
@@ -48,29 +57,11 @@ namespace optimization{
 		   This function is used in all algorithms, hence defined in the base class */
 		void performance(const MatrixXd &X, const RowVectorXd &h, int TI);
 
-		/* Gather performance measures */
+		/* Gather performance measures by returning the metric values */
 		std::vector<RowVectorXd> getPerformance();
 
-	};
-
-
-	class CPF: public Algorithm
-	{
-
-	public:
-
-		/* Default trivial constructor */
-		CPF() {}
-
-		/* Constructor */
-		explicit CPF(int num_iterations)
-			: Algorithm(num_iterations) {}
-
-		/* Run the algorithm for one iteration */
-		virtual MatrixXd run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator);
-
-		/* A function that calculate control force for each particle at each iteration */
-		MatrixXd& Control(const MatrixXd &X, const RowVectorXd &h_diff, MatrixXd &u);
+		/* Print performance measures without returning the metric values */
+		void printPerformance(std::string optimizer_name, int which_metric);
 
 	};
 
