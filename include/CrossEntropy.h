@@ -2,6 +2,9 @@
 This header defines the Cross Entropy (CE) algorithm. 
 */
 
+#ifndef CROSSENTROPY
+#define CROSSENTROPY
+
 #include <iostream>
 
 #include <Eigen/Dense>
@@ -49,4 +52,9 @@ namespace optimization{
 
 	};
 
-}
+} // End of namespace optimization
+
+
+#endif
+
+

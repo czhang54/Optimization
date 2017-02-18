@@ -2,6 +2,9 @@
 This header defines the Controlled Particle Filter (CPF) algorithm. 
 */
 
+#ifndef CONTROLLEDPARTICLEFILTER
+#define CONTROLLEDPARTICLEFILTER
+
 #include <iostream>
 // #include <random>
 
@@ -32,3 +35,6 @@ namespace optimization{
 
 
 } // End of namespace optimization
+
+
+#endif
