@@ -57,8 +57,11 @@ namespace optimization{
 		   This function is used in all algorithms, hence defined in the base class */
 		void performance(const MatrixXd &X, const RowVectorXd &h, int TI);
 
-		/* Gather performance measures */
+		/* Gather performance measures by returning the metric values */
 		std::vector<RowVectorXd> getPerformance();
+
+		/* Print performance measures without returning the metric values */
+		void printPerformance(std::string optimizer_name, int which_metric);
 
 	};
 

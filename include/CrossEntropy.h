@@ -25,7 +25,7 @@ namespace optimization{
 		CrossEntropy() {}
 
 		/* Constructor */
-		explicit CrossEntropy(int num_iterations, int dim, int num_particles) 
+		CrossEntropy(int num_iterations, int dim, int num_particles) 
 			: Algorithm(num_iterations, dim, num_particles) {
 				num_elites_ = static_cast<int>(num_particles*quantile_);
 				model_mean_ = VectorXd::Constant(dim, 40);
@@ -33,12 +33,16 @@ namespace optimization{
 				model_cov_ = cov.asDiagonal();
 			}
 
+		/* Run the algorithm for one iteration */
 		virtual MatrixXd run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator);
 
+		/* Select eleite samples according to a quantile rule */
 		void selectElites(const MatrixXd &X, RowVectorXd &h, MatrixXd &elites); 
 
+		/* Use the elite samples to update model parameters */
 		void updateParameters(MatrixXd &elites, RowVectorXd &weights);
 
+		/* Generate new sample from the updated model */
 		void generateNewSamples(MatrixXd &new_samples, std::default_random_engine &generator);
 
 

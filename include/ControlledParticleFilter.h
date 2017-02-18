@@ -19,7 +19,7 @@ namespace optimization{
 		ControlledParticleFilter() {}
 
 		/* Constructor */
-		explicit ControlledParticleFilter(int num_iterations, int dim, int num_particles)
+		ControlledParticleFilter(int num_iterations, int dim, int num_particles)
 			: Algorithm(num_iterations, dim, num_particles) {}
 
 		/* Run the algorithm for one iteration */

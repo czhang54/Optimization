@@ -14,6 +14,7 @@ Specific Prior and Algorithm models are defined in Prior.h and Algorithm.h, resp
 #define OPTIMIZER
 
 #include <iostream>
+#include <string>
 
 #include <Eigen/Dense>
 
@@ -90,15 +91,21 @@ namespace optimization{
 			}	
 		}
 
-		/* Access to the state of the optimizer */
+		/* Access to the state of the optimizer (not frequently used) */
 		Eigen::MatrixXd& getState() {return state;}
 
-		/* Access to the perforamance of the optimizer
+		/* Access to the perforamance of the optimizer by returning:
 		   (1) Average function value after each iteration
 		   (2) Best function value found after each iteration
 		   (3) Distance from the global minimizer */
 		std::vector<Eigen::RowVectorXd> getPerformance() {
 			return algorithm.getPerformance();
+		}
+
+		/* Print the perforamance metric of the optimizer without returning the metric values.
+		   Need to declare which metric to print. */
+		void printPerformance(int which_metric) {
+			algorithm.printPerformance(name, which_metric);
 		}
 
 
