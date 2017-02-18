@@ -11,8 +11,6 @@ Hence, the project can be easily expanded to accommodate more options.
 
 #include <iostream>
 #include <string>
-// #include <vector>
-// #include <cmath>
 #include <map>
 
 #include <Eigen/Dense>
@@ -23,6 +21,7 @@ Hence, the project can be easily expanded to accommodate more options.
 #include "Algorithm.h"
 #include "CrossEntropy.h"
 #include "ControlledParticleFilter.h"
+#include "PerformanceMetric.h"
 
 // using namespace std;
 // using namespace Eigen;
@@ -32,16 +31,6 @@ template<typename Obj_type>
 optimization::Obj_fn* define_objective_function(int dim) { return new Obj_type(dim); }
 
 typedef std::map<std::string, optimization::Obj_fn*> Obj_fn_map;
-
-/* Some metric to assess the algorithms */
-enum Performance_metric
-{
-	H_MEAN,
-	H_BEST,
-	DISTANCE
-};
-
-
 
 int main(){
 
@@ -79,7 +68,7 @@ int main(){
 
 	/* Define and initialize optimizers */
 	// Controlled Particle Filter (CPF) algorithm
-	optimization::Optimizer<optimization::Gaussian, optimization::ControlledParticleFilter> optimizer_CPF("Controlled Particle Filter", obj_fn, num_iterations, step_size, dim, num_particles);
+	optimization::Optimizer<optimization::Gaussian, optimization::ControlledParticleFilter> optimizer_CPF("CPF", obj_fn, num_iterations, step_size, dim, num_particles);
 	optimizer_CPF.initialize(generator);
 
 	// Cross Entropy (CE) algorithm
@@ -90,20 +79,15 @@ int main(){
 	optimizer_CPF.simulate(generator);
 	optimizer_CE.simulate(generator);
 
-	/* Investigate performance using three metrics:
-	(1) Average function value, H_MEAN, check how it changes over iterations
-	(2) Best function value found, H_BEST, check how it changes over iterations
-	(3) Distance from the current state to global minimizer, DISTANCE, check how it changes over iterations */
-	std::cout << "Performance of CPF" << '\n';
-	std::cout << optimizer_CPF.getPerformance()[H_MEAN] << '\n';
-	std::cout << optimizer_CPF.getPerformance()[H_BEST] << '\n';
-	std::cout << optimizer_CPF.getPerformance()[DISTANCE] << '\n';
-
-	std::cout << "Performance of CE" << '\n';
-	std::cout << optimizer_CE.getPerformance()[H_MEAN] << '\n';
-	std::cout << optimizer_CE.getPerformance()[H_BEST] << '\n';
-	std::cout << optimizer_CE.getPerformance()[DISTANCE] << '\n';
-
+	/* Investigate performance using one of the three metrics:
+	(1) AVERAGE_VALUE: Average function value at each iterations
+	(2) BEST_VALUE_FOUND: Best function value found at each iterations
+	(3) DISTANCE_ERROR: Distance between particle mean and the global minimizer at each iterations
+	The enum class is defined in "PerformanceMetric.h" */
+	optimizer_CPF.printPerformance(BEST_VALUE_FOUND);
+	optimizer_CE.printPerformance(BEST_VALUE_FOUND);
+	optimizer_CPF.printPerformance(DISTANCE_ERROR);
+	optimizer_CE.printPerformance(DISTANCE_ERROR);
 
 	delete obj_fn;
 
