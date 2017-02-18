@@ -1,3 +1,24 @@
-# Optimization_Cpp
+# Optimization
 
-Chi's C++ codes for global optimization project
+This repository contains C++ codes for simulating global optimization algorithms. 
+It is designed to be flexible for the user to add:
+  + Objective functions (src/Obj_fn.cpp)
+  + Initialization methods for the optimizers (src/Prior.cpp)
+  + Specific optimization algorithms (src/Algorithm.cpp)
+
+Directories:
+  + include: contains all the headers
+  + src: contains all the source files
+  + example: contains the interface to start the simulation
+ 
+Requirement:
+  + Eigen: a convenient matrix library that can be downloaded at http://eigen.tuxfamily.org/index.php?title=Main_Page#Download
+ 
+The project was tested on Mac OS 10.12 using g++ 4.2.1. 
+To compile and run the project in terminal: 
+  + cd example
+  + g++ -std=c++11 -I ./../include -c ./../src/*.cpp example.cpp
+  + g++ *.o -o example
+  + ./example
+
+A more comprehensive presentation of recent global optimization algorithms can be found in a technical note contained in the Optimization_Python project 
