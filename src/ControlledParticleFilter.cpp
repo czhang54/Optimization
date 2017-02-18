@@ -14,7 +14,7 @@ Implementation of the Controlled Particle Filter (CPF) algorithm.
 
 namespace optimization{
 
-
+	/* Execute Controlled Particle Filter (CPF) algorithm for one iteration */
 	MatrixXd ControlledParticleFilter::run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator) {
 
 		if (TI % 1 == 0)
@@ -24,10 +24,6 @@ namespace optimization{
 
 		// Evaluate performance of current iteration
 		performance(X, h, TI);
-		
-		// std::cout << "h_mean = " << h_mean(TI) << '\n';
-		// std::cout << "h_best = " << h_best(TI) << '\n';
-		// std::cout << "distance = " << distance(TI) << '\n';
 		
 		RowVectorXd h_diff = h.array() - h_mean(TI);
 
@@ -39,13 +35,13 @@ namespace optimization{
 	}
 
 
-	// Affine control law
+	// Compute the affine control law
 	MatrixXd& ControlledParticleFilter::affine_control(const MatrixXd &X, const RowVectorXd &h_diff, MatrixXd &u){
 
 		typedef Matrix<MatrixXd, Dynamic, 1> Tensor3Xd; // 3d array (tensor)
 
-		int dim = X.rows();
-		int N   = X.cols();
+		// int dim = X.rows();
+		int N   = num_particles;
 		int L   = dim*(dim+1)/2;
 
 		// MatrixXd  u = MatrixXd::Zero(dim, N);

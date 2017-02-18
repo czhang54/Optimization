@@ -14,6 +14,7 @@ Implementation of the Cross Entropy (CE) algorithm.
 
 namespace optimization{
 
+	/* Execute Cross Entropy (CE) algorithm for one iteration */
 	MatrixXd CrossEntropy::run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator){
 
 		if (TI % 1 == 0)
@@ -44,6 +45,7 @@ namespace optimization{
 	}
 
 
+	/* Select eleite samples according to a quantile rule */
 	void CrossEntropy::selectElites(const MatrixXd &X, RowVectorXd &h, MatrixXd &elites){
 
 		// Sort h
@@ -64,6 +66,7 @@ namespace optimization{
 	}
 
 
+	/* Use the elite samples to update model parameters */
 	void CrossEntropy::updateParameters(MatrixXd &elites, RowVectorXd &weights){
 		// Compute weighted mean and covariance
 		VectorXd mean_update = VectorXd::Zero(dim);
@@ -81,8 +84,9 @@ namespace optimization{
 	}
 
 
+	/* Generate new sample from the updated (Gaussian) model */
 	void CrossEntropy::generateNewSamples(MatrixXd &new_samples, std::default_random_engine &generator){
-		// Currently neglecting correlations of updated model
+		// Currently neglecting correlations in the updated Gaussian model
 
 		for (int d=0; d<dim; d++){
 			std::normal_distribution<double> normal(model_mean_(d), std::sqrt(model_cov_(d,d)));

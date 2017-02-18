@@ -4,6 +4,7 @@ Implementation of the Algorithm base class.
 
 #include <iostream>
 #include <cmath>
+#include <string>
 
 #include <Eigen/Dense>
 
@@ -11,6 +12,7 @@ Implementation of the Algorithm base class.
 // #include "Prior.h"
 #include "Optimizer.h"
 #include "Algorithm.h" 
+#include "PerformanceMetric.h"
 
 // using namespace std;
 
@@ -62,6 +64,28 @@ namespace optimization{
 		p.push_back(h_best);
 		p.push_back(distance);
 		return p;
+	}
+
+	/* Print a particular performance metric, currently three options */
+	void Algorithm::printPerformance(std::string optimizer_name, int which_metric){ 
+		std::cout << optimizer_name << ' ';
+		switch(which_metric){
+			case AVERAGE_VALUE:
+				std::cout << "Average function value at each iteration:" << '\n';
+				std::cout << h_mean << '\n';
+				break;
+			case BEST_VALUE_FOUND:
+				std::cout << "Best function value found at each iteration:" << '\n';
+				std::cout << h_best << '\n';	
+				break;
+			case DISTANCE_ERROR:
+				std::cout << "Distance error at each iteration:" << '\n';
+				std::cout << distance << '\n';
+				break;
+			default:
+				std::cout << "Please select a proper perforamance metric!";			
+		}
+
 	}
 	
 
