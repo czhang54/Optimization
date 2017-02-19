@@ -26,7 +26,7 @@ To compile and run the project in terminal:
   + g++ *.o -o example
   + ./example
 
-Alternatively, one can build/compile the project using the provided CMakeList.txt:
+Alternatively, one can build/compile the project using the provided CMakeLists.txt:
   + mkdir build
   + cd mkdir 
   + cmake -G "Unix Makefiles" .. # Or other types of make files as appropriate
