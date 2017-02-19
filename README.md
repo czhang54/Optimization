@@ -6,10 +6,12 @@ It is designed to be flexible for the user to add:
   + Initialization methods for the optimizers (src/Prior.cpp)
   + Specific optimization algorithms (src/Algorithm.cpp)
 
+I am continuously working to make this project serve as a library for more general purposes.
+
 Directories:
   + include: contains all the headers
   + src: contains all the source files
-  + example: contains the interface to start the simulation
+  + example: contains example programs to do some simulation
  
 Requirement:
   + Eigen: a convenient matrix library that can be downloaded at http://eigen.tuxfamily.org/index.php?title=Main_Page#Download
@@ -21,4 +23,4 @@ To compile and run the project in terminal:
   + g++ *.o -o example
   + ./example
 
-A more comprehensive presentation of recent global optimization algorithms can be found in a technical note contained in the Optimization_Python project 
+A more comprehensive presentation of recent global optimization algorithms can be found in a technical note contained in the Optimization_Python project. 
