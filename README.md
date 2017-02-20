@@ -30,8 +30,10 @@ To compile and run the project in terminal:
 ```
 
 Alternatively, one can build/compile the project using the provided CMakeLists.txt:
+```
   + mkdir build
   + cd mkdir 
-  + cmake -G "Unix Makefiles" .. # Or other types of make files as appropriate
-  + make # This compiles the project
-  + ./optimization # optimization is the name of the executable
+  + cmake -G "Unix Makefiles" .. 
+  + make 
+  + ./optimization 
+```
