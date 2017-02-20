@@ -3,9 +3,9 @@ One example is the controlled particle filter (CPF) algorithm that I have recent
 The research paper can be found on arXiv: https://arxiv.org/abs/1701.02413. 
 
 The code structure is flexible for the user to add:
-(1) objective functions to be minimized (see obj_map below and also Obj_fn.h)
-(2) optimization algorithms (Algorithm.h)
-(3) initialization methods (Prior.h)
+(1) objective functions to be minimized (see obj_map below and also src/Obj_fn.cpp)
+(2) optimization algorithms (src/Algorithms/XXXX.cpp)
+(3) initialization methods (src/Prior.cpp)
 Hence, the project can be easily expanded to accommodate more options. 
 */
 
