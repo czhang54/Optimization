@@ -6,7 +6,7 @@ It is designed to be flexible for the user to add:
   + Initialization methods for the optimizers (src/Prior.cpp)
   + Specific optimization algorithms (src/Algorithm.cpp)
 
-I am continuously working to make this project serve as a library for more general purposes. 
+I am continuously working to make this project serve as a library for more general purposes. I will also add some more algorithms and objective functions.
 
 A more comprehensive presentation of recent global optimization algorithms can be found in a technical note contained in the Optimization_Python project. 
 
