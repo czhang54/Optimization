@@ -14,6 +14,7 @@ A more comprehensive presentation of recent global optimization algorithms can b
 Directories:
   + include: contains all the headers
   + src: contains all the source files
+  + src/Algorithms: contains implementation of all optimization algorithms
   + example: contains example programs to do some simulation
  
 Requirement:
@@ -22,7 +23,7 @@ Requirement:
 The project was tested on Mac OS 10.12 using g++ 4.2.1. 
 To compile and run the project in terminal: 
   + cd example
-  + g++ -std=c++11 -I ./../include -c ./../src/*.cpp example.cpp # Needs to be careful with the include and source path
+  + g++ -std=c++11 -I ./../include -c ./../src/*.cpp ./../src/Algorithms/*.cpp example.cpp
   + g++ *.o -o example
   + ./example
 
