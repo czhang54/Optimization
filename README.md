@@ -37,3 +37,5 @@ Alternatively, one can build/compile the project using the provided CMakeLists.t
   make 
   ./optimization 
 ```
+Users may make substitutions (project names, CMake file type etc.) in the above command lines as appropriate
+
