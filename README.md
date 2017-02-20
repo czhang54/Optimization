@@ -32,7 +32,7 @@ To compile and run the demo (example.cpp) using command line:
 Alternatively, one can build/compile the project using the provided CMakeLists.txt:
 ```
   mkdir build
-  cd mkdir 
+  cd build
   cmake -G "Unix Makefiles" .. 
   make 
   ./optimization 
