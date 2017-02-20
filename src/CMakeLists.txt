@@ -2,9 +2,9 @@
 add_library(optimization_source
 	Prior.cpp 
 	Obj_fn.cpp 
-	Algorithm.cpp 
-	CrossEntropy.cpp 
-	ControlledParticleFilter.cpp
+	Algorithms/Algorithm.cpp 
+	Algorithms/CrossEntropy.cpp 
+	Algorithms/ControlledParticleFilter.cpp
 )
 
 # Include headers from a separate directory
