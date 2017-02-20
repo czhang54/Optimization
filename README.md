@@ -22,12 +22,12 @@ Requirement:
  
 The project was tested on Mac OS 10.12 using g++ 4.2.1. 
 To compile and run the project in terminal: 
-'''
+```
   + cd example
   + g++ -std=c++11 -I ./../include -c ./../src/*.cpp ./../src/Algorithms/*.cpp example.cpp
   + g++ *.o -o example
   + ./example
-'''
+```
 
 Alternatively, one can build/compile the project using the provided CMakeLists.txt:
   + mkdir build
