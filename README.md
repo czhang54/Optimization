@@ -1,10 +1,10 @@
 # Optimization
 
 This repository contains C++ codes for simulating global optimization algorithms. 
-It is designed to be flexible for the user to add:
+It is designed to be expandable so that one can add more:
   + Objective functions (src/Obj_fn.cpp)
   + Initialization methods for the optimizers (src/Prior.cpp)
-  + Specific optimization algorithms (src/Algorithm.cpp)
+  + Specific optimization algorithms (src/Algorithms/)
 
 I am continuously working to make this project serve as a library for more general purposes. I will also add some more algorithms and objective functions.
 
