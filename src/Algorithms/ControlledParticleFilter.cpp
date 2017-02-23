@@ -3,7 +3,7 @@ Implementation of the Controlled Particle Filter (CPF) algorithm.
 */
 
 #include <iostream>
-#include <cmath>
+// #include <cmath>
 
 #include <Eigen/Dense>
 
@@ -14,13 +14,15 @@ Implementation of the Controlled Particle Filter (CPF) algorithm.
 
 namespace optimization{
 
-	/* Execute Controlled Particle Filter (CPF) algorithm for one iteration */
-	MatrixXd ControlledParticleFilter::run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator) {
+	/* Execute Controlled Particle Filter (CPF) algorithm for one iteration.
+	   Input particles X are directly updated to avoid defining extra variables. */
+	MatrixXd& ControlledParticleFilter::run(MatrixXd &X, int TI, double dt, std::default_random_engine &generator) {
 
-		if (TI % 1 == 0)
-			{std::cout << "TI = " << TI << '\n';}
+		// if (TI % 1 == 0)
+		// 	{std::cout << "TI = " << TI << '\n';}
 
-		RowVectorXd h = obj_fn->evaluate(X); // Evaluate objective function at particles
+		// Evaluate objective function at particles
+		RowVectorXd h = obj_fn->evaluate(X); 
 
 		// Evaluate performance of current iteration
 		performance(X, h, TI);
@@ -29,9 +31,10 @@ namespace optimization{
 
 		// Main part: calculate control function for each particle
 		MatrixXd u = MatrixXd::Zero(X.rows(), X.cols());
-		u = affine_control(X, -h_diff, u);
 
-		return X + u*dt;
+		X += affine_control(X, -h_diff, u)*dt;
+
+		return X;
 	}
 
 

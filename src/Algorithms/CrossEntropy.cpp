@@ -4,7 +4,7 @@ Implementation of the Cross Entropy (CE) algorithm.
 
 #include <iostream>
 #include <vector>
-#include <cmath>
+// #include <cmath>
 
 #include <Eigen/Dense>
 
@@ -14,11 +14,12 @@ Implementation of the Cross Entropy (CE) algorithm.
 
 namespace optimization{
 
-	/* Execute Cross Entropy (CE) algorithm for one iteration */
-	MatrixXd CrossEntropy::run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator){
+	/* Execute Cross Entropy (CE) algorithm for one iteration.
+	   Input particles X are directly updated to avoid defining extra variables. */
+	MatrixXd& CrossEntropy::run(MatrixXd &X, int TI, double dt, std::default_random_engine &generator){
 
-		if (TI % 1 == 0)
-			{std::cout << "TI = " << TI << '\n';}
+		// if (TI % 1 == 0)
+		// 	{std::cout << "TI = " << TI << '\n';}
 
 		// Evaluate objective function at particles
 		RowVectorXd h = obj_fn->evaluate(X); 
@@ -37,10 +38,9 @@ namespace optimization{
 		updateParameters(elites, weights);
 
 		// Generate new samples from updated model
-		MatrixXd new_samples = MatrixXd::Zero(dim, num_particles);
-		generateNewSamples(new_samples, generator);
+		generateNewSamples(X, generator);
 
-		return new_samples;
+		return X;
 
 	}
 
@@ -84,8 +84,9 @@ namespace optimization{
 	}
 
 
-	/* Generate new sample from the updated (Gaussian) model */
-	void CrossEntropy::generateNewSamples(MatrixXd &new_samples, std::default_random_engine &generator){
+	/* Generate new sample from the updated (Gaussian) model. 
+	   New samples are stored in X */
+	void CrossEntropy::generateNewSamples(MatrixXd &X, std::default_random_engine &generator){
 		// Currently neglecting correlations in the updated Gaussian model
 
 		for (int d=0; d<dim; d++){
@@ -94,7 +95,7 @@ namespace optimization{
 			for (int i=0; i<num_particles; i++){
 				particles_d(i) = normal(generator);
 			}
-			new_samples.row(d) = particles_d;
+			X.row(d) = particles_d;
 		}
 	}
 

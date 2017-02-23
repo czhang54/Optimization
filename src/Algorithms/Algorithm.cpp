@@ -22,7 +22,7 @@ namespace optimization{
 	using namespace Eigen;
 
     /* Algorithm is the base class for all algorithms */
-	MatrixXd Algorithm::run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator){
+	MatrixXd& Algorithm::run(MatrixXd &X, int TI, double dt, std::default_random_engine &generator){
 
 		return X;
 	}
