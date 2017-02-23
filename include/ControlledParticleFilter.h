@@ -2,9 +2,6 @@
 This header defines the Controlled Particle Filter (CPF) algorithm. 
 */
 
-#ifndef CONTROLLEDPARTICLEFILTER
-#define CONTROLLEDPARTICLEFILTER
-
 #include <iostream>
 // #include <random>
 
@@ -22,11 +19,11 @@ namespace optimization{
 		ControlledParticleFilter() {}
 
 		/* Constructor */
-		ControlledParticleFilter(int num_iterations, int dim, int num_particles)
-			: Algorithm(num_iterations, dim, num_particles) {}
+		ControlledParticleFilter(int num_iterations, double step_size, int dim, int num_particles)
+			: Algorithm(num_iterations, step_size, dim, num_particles) {}
 
 		/* Run the algorithm for one iteration */
-		virtual MatrixXd run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator);
+		virtual MatrixXd& run(MatrixXd &X, int TI, double dt, std::default_random_engine &generator);
 
 		/* A function that calculate control force for each particle at each iteration */
 		MatrixXd& affine_control(const MatrixXd &X, const RowVectorXd &h_diff, MatrixXd &u);
@@ -35,6 +32,3 @@ namespace optimization{
 
 
 } // End of namespace optimization
-
-
-#endif

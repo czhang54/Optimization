@@ -8,6 +8,7 @@ This header defines the base class of all algorithms.
 #include <iostream>
 #include <vector>
 #include <random>
+#include <cmath>
 
 #include <Eigen/Dense>
 
@@ -28,6 +29,7 @@ namespace optimization{
 		Obj_fn *obj_fn;
 		int dim;
 		int num_particles;
+		double step_size;
 
 		// Performace metric
 		RowVectorXd h_mean;
@@ -40,18 +42,18 @@ namespace optimization{
 		Algorithm() {}
 
 		/* Constructor */
-		explicit Algorithm(int num_iterations, int dim, int num_particles)
-			: dim(dim), num_particles(num_particles) {
-			h_mean = RowVectorXd::Zero(num_iterations+1);
-			h_best = RowVectorXd::Zero(num_iterations+1);
-			distance = RowVectorXd::Zero(num_iterations+1);
+		Algorithm(int num_iterations, double step_size, int dim, int num_particles)
+			: step_size(step_size), dim(dim), num_particles(num_particles) {
+			h_mean = RowVectorXd::Zero(num_iterations);
+			h_best = RowVectorXd::Zero(num_iterations);
+			distance = RowVectorXd::Zero(num_iterations);
 		}
 
 		/* Link to the objective function */
 		void add_obj(Obj_fn *fn){obj_fn = fn;}
 
 		/* Run the algorithm for one iteration */
-		virtual MatrixXd run(const MatrixXd &X, int TI, double dt, std::default_random_engine &generator);
+		virtual MatrixXd& run(MatrixXd &X, int TI, double dt, std::default_random_engine &generator);
 
 		/* Calculate performance metric of the algorithm, calculated at each iteration
 		   This function is used in all algorithms, hence defined in the base class */
@@ -69,8 +71,5 @@ namespace optimization{
 } // End of namespace optimization
 
 
-
-
-
-
 #endif
+

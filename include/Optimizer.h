@@ -9,6 +9,7 @@ Hence, the Optimizer class is a template with Prior (P) and Algorithm (A) as two
 Specific Prior and Algorithm models are defined in Prior.h and Algorithm.h, respectively.
 */
 
+
 #ifndef OPTIMIZER
 #define OPTIMIZER
 
@@ -62,7 +63,7 @@ namespace optimization{
 			state = Eigen::MatrixXd::Zero(dim, num_particles);
 
 			prior = Prior_model(dim);
-			algorithm = Algorithm_model(num_iterations, dim, num_particles);
+			algorithm = Algorithm_model(num_iterations, step_size, dim, num_particles);
 			obj_fn = fn;
 		}
 
